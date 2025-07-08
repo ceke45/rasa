@@ -41,7 +41,7 @@ COMPANY_KB = {
 
 # --- Gemini API 관련 설정 ---
 GEMINI_API_KEY = "AIzaSyC0dAtVCMLn-CqwDYK8-mwnaIvZ4EDNpNs" 
-API_URL = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key={GEMINI_API_KEY}"
+API_URL = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={GEMINI_API_KEY}"
 
 
 class ActionDispatchQuery(Action):

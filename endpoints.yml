@@ -44,3 +44,6 @@ action_endpoint:
 # This file contains the configurations for the Rasa action server,
 # as well as the connectors endpoint.
 # https://rasa.com/docs/rasa/action-server
+
+input_channels:
+  - my_socketio.PatchedSocketIOInput

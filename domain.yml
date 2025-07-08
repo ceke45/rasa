@@ -3,7 +3,6 @@ version: "3.1"
 intents:
   - greet
   - goodbye
-  - restart # 대화 초기화 기능은 유지합니다.
   - ask_anything 
 
 
@@ -19,7 +18,6 @@ responses:
   - text: "저는 Rasa로 만들어진 AI 챗봇입니다."
 
 actions:
-  - action_restart
   - action_dispatch_query 
 
 session_config:

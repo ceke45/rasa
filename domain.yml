@@ -1,0 +1,27 @@
+version: "3.1"
+
+intents:
+  - greet
+  - goodbye
+  - restart # 대화 초기화 기능은 유지합니다.
+  - ask_anything 
+
+
+
+responses:
+  utter_greet:
+  - text: "안녕하세요! 무엇을 도와드릴까요?"
+
+  utter_goodbye:
+  - text: "안녕히 가세요! 언제든 다시 찾아주세요."
+
+  utter_iamabot:
+  - text: "저는 Rasa로 만들어진 AI 챗봇입니다."
+
+actions:
+  - action_restart
+  - action_dispatch_query 
+
+session_config:
+  session_expiration_time: 60
+  carry_over_slots_to_new_session: true

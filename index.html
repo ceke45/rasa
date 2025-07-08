@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>회사 챗봇</title>
+</head>
+<body>
+    <h1>회사 챗봇 데모</h1>
+    <div id="webchat"></div>
+    <script src="https://cdn.jsdelivr.net/npm/rasa-webchat/lib/index.js"></script>
+    <script>
+        WebChat.default({
+            customData: { language: "ko" }, // optional
+            socketUrl: "http://localhost:5005", // Rasa 서버 주소
+            title: "회사 챗봇"
+        }, null);
+    </script>
+</body>
+</html>

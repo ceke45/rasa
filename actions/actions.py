@@ -2,14 +2,17 @@ import os
 import requests 
 import json
 from typing import Any, Text, Dict, List
+from datetime import datetime  
+import pytz                  
 
 from rasa_sdk import Action, Tracker
 from rasa_sdk.executor import CollectingDispatcher
 
 # ==================================================================
-#            ★ 1. 사용자님이 만드신 최종 회사 정보 지식 베이스 ★
+#            ★ 1. 사용자님이 만드신 최종 회사 정보 지식 베이스 ★
 # ==================================================================
 COMPANY_KB = {
+    # (기존 내용은 그대로 유지)
     "회사이름": "저희 회사는 '엔지켐생명과학' 입니다.", 
     "주소": "저희 대표 회사주소는 서울 서초구 강남대로 27, at센터 10층,14층에 있습니다.",
     "대표": "저희 회사 회장님 성함은 '손기영' 입니다.",
@@ -55,19 +58,26 @@ class ActionDispatchQuery(Action):
         
         user_message = tracker.latest_message.get('text', '').lower().strip()
         
-    
+        
         topic = self._find_topic_by_keywords(user_message)
         
+        if topic == "현재시간":
+            
+            current_time_message = self._get_current_time()
+            dispatcher.utter_message(text=current_time_message)
         
-        if topic:
+        elif topic:
+            
             answer = COMPANY_KB.get(topic)
             dispatcher.utter_message(text=answer)
-      
+    
         elif self._is_company_category_query(user_message):
+            
             category_guide = self._get_category_guide(user_message)
             dispatcher.utter_message(text=category_guide)
-       
+      
         else:
+            
             self._call_gemini_api(dispatcher, user_message)
             
         return []
@@ -75,7 +85,10 @@ class ActionDispatchQuery(Action):
     def _call_gemini_api(self, dispatcher: CollectingDispatcher, message: str):
         """Gemini API를 호출하는 헬퍼 함수"""
         headers = {'Content-Type': 'application/json'}
-        data = {"contents": [{"parts": [{"text": message}]}]}
+        # Gemini가 회사 관련 질문에 더 잘 답변하도록 프롬프트 보강
+        prompt = (f"너는 '엔지켐생명과학'의 사내 업무를 도와주는 친절한 AI 비서야. "
+                  f"다음 질문에 대해 간결하고 명확하게 답변해줘. 질문: {message}")
+        data = {"contents": [{"parts": [{"text": prompt}]}]}
         try:
             response = requests.post(API_URL, headers=headers, json=data, timeout=30)
             response.raise_for_status()
@@ -85,11 +98,17 @@ class ActionDispatchQuery(Action):
         except requests.exceptions.Timeout:
             dispatcher.utter_message(text="죄송합니다, 답변을 생성하는 데 너무 오래 걸려요.")
         except Exception as e:
-            dispatcher.utter_message(text=f"API 호출 중 오류가 발생했습니다: {e}")
+            # 실제 운영 시에는 print(e) 또는 로깅으로 에러를 확인하는 것이 좋습니다.
+            dispatcher.utter_message(text="죄송합니다. 답변을 생성하는 중 오류가 발생했어요. 다시 시도해주세요.")
 
     def _find_topic_by_keywords(self, message: str) -> str:
-        """키워드 매칭으로 주제 찾기 (사용자님이 만드신 로직 기반)"""
+        """키워드 매칭으로 주제 찾기"""
         keyword_mapping = {
+         
+            "오늘 날짜": "현재시간", "날짜": "현재시간", "오늘": "현재시간",
+            "현재 시간": "현재시간", "시간": "현재시간", "지금 몇시": "현재시간", "몇시": "현재시간",
+            
+            # --- 기존 키워드 ---
             "회사 이름": "회사이름", "회사명": "회사이름", "회사주소": "주소", "회사 주소": "주소",
             "회사 대표": "대표", "회사 회장": "대표", "회사 대표이사": "대표", "대표이사": "대표",
             "회사 비전": "비전", "회사 설립일": "설립일", "회사 창립일": "설립일", "r&d전략개발실": "R&D전략개발실",
@@ -101,11 +120,21 @@ class ActionDispatchQuery(Action):
             "it지원": "IT지원", "보안팀": "보안팀", "복장규정": "복장규정", "복장 규정": "복장규정",
             "출근시간": "출근시간", "보안규정": "보안규정", "보안 규정": "보안규정"
         }
+        # 더 긴 키워드가 먼저 매칭되도록 정렬
         sorted_keywords = sorted(keyword_mapping.keys(), key=len, reverse=True)
         for keyword in sorted_keywords:
             if keyword in message:
                 return keyword_mapping[keyword]
         return ""
+
+
+    def _get_current_time(self) -> str:
+        """pytz를 사용하여 한국 기준 현재 날짜와 시간을 문자열로 반환하는 헬퍼 함수"""
+        seoul_timezone = pytz.timezone("Asia/Seoul")
+        current_time = datetime.now(seoul_timezone)
+
+        formatted_time = current_time.strftime("%Y년 %m월 %d일 %A %p %I시 %M분")
+        return f"현재 한국 시간은 {formatted_time}입니다. 😊"
         
     def _is_company_category_query(self, message: str) -> bool:
         """사용자 메시지에 카테고리성 키워드가 있는지 확인"""
@@ -113,7 +142,7 @@ class ActionDispatchQuery(Action):
         return any(word in message for word in category_keywords)
 
     def _get_category_guide(self, message: str) -> str:
-        """카테고리별 안내 메시지 (사용자님이 만드신 로직 기반)"""
+        """카테고리별 안내 메시지"""
         if any(word in message for word in ["부서", "팀", "조직"]):
             return "어떤 부서 정보가 궁금하신가요? (예: R&D전략개발실, 국내영업팀, IT팀 등)"
         elif any(word in message for word in ["업무", "프로세스", "절차", "신청"]):

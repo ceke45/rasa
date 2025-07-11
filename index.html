@@ -1,19 +1,110 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <title>회사 챗봇</title>
+  <meta charset="UTF-8">
+  <title>엔지켐 챗봇 시스템</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f0f4f8;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .chat-container {
+      width: 400px;
+      height: 600px;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .chat-header {
+      background-color: #ffffff;
+      border-bottom: 1px solid #ccc;
+      text-align: center;
+      padding: 10px;
+    }
+    .chat-header img {
+      height: 60px;
+    }
+    .chat-messages {
+      flex: 1;
+      padding: 15px;
+      overflow-y: auto;
+      background-color: #eef4f7;
+    }
+    .chat-input {
+      display: flex;
+      border-top: 1px solid #ccc;
+    }
+    .chat-input input {
+      flex: 1;
+      border: none;
+      padding: 10px;
+      font-size: 16px;
+    }
+    .chat-input button {
+      background: #0077b6;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body>
-    <h1>회사 챗봇 데모</h1>
-    <div id="webchat"></div>
-    <script src="https://cdn.jsdelivr.net/npm/rasa-webchat/lib/index.js"></script>
-    <script>
-        WebChat.default({
-            customData: { language: "ko" }, // optional
-            socketUrl: "http://localhost:5005", // Rasa 서버 주소
-            title: "회사 챗봇"
-        }, null);
-    </script>
+  <div class="chat-container">
+    <div class="chat-header">
+      <img src="enzychem1.png" alt="enzychem logo">
+    </div>
+    <div class="chat-messages" id="chat-box">
+      <div><em>무엇을 도와드릴까요? 궁금한 점을 입력해 주세요.</em></div>
+    </div>
+    <div class="chat-input">
+      <input type="text" id="user-input" placeholder="메시지를 입력하세요..." />
+      <button onclick="sendMessage()">전송</button>
+    </div>
+  </div>
+
+  <script>
+    const chatBox = document.getElementById("chat-box");
+    const userInput = document.getElementById("user-input");
+
+    function appendMessage(sender, message) {
+      const msg = document.createElement("div");
+      msg.innerHTML = `<strong>${sender}:</strong> ${message}`;
+      chatBox.appendChild(msg);
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    function sendMessage() {
+      const message = userInput.value.trim();
+      if (!message) return;
+
+      appendMessage("사용자", message);
+      userInput.value = "";
+
+      fetch("http://localhost:5005/webhooks/rest/webhook", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ sender: "user", message: message })
+      })
+      .then(response => response.json())
+      .then(data => {
+        data.forEach(res => {
+          appendMessage("챗봇", res.text);
+        });
+      });
+    }
+
+    userInput.addEventListener("keydown", function(e) {
+      if (e.key === "Enter") sendMessage();
+    });
+  </script>
 </body>
 </html>

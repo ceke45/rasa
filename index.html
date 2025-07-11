@@ -3,71 +3,162 @@
 <head>
   <meta charset="UTF-8">
   <title>엔지켐 챗봇 시스템</title>
+  <link rel="icon" type="image/png" href="favicon.png">
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       font-family: 'Segoe UI', sans-serif;
-      background-color: #f0f4f8;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
+      background-color: #e8f0f7;
       margin: 0;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
-    .chat-container {
-      width: 400px;
-      height: 600px;
-      background: #fff;
-      border-radius: 12px;
-      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+
+    .layout {
+      display: flex;
+      flex-direction: row;
+      width: 90%;
+      max-width: 1100px;
+      height: 700px;
+      border-radius: 16px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
       overflow: hidden;
+      background-color: #fff;
+    }
+
+    .image-panel {
+      flex: 0.4;
+      background-color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-right: 1px solid #ddd;
+      padding: 20px;
+    }
+
+    .image-panel img {
+      width: 100%;
+      height: auto;
+      max-height: 90%;
+      object-fit: contain;
+    }
+
+    .chat-panel {
+      flex: 0.6;
       display: flex;
       flex-direction: column;
+      background-color: #fefefe;
     }
+
     .chat-header {
-      background-color: #ffffff;
-      border-bottom: 1px solid #ccc;
+      background-color: #0077b6;
+      color: white;
+      padding: 15px;
       text-align: center;
-      padding: 10px;
+      font-weight: bold;
+      font-size: 20px;
+      border-bottom: 1px solid #ccc;
     }
-    .chat-header img {
-      height: 60px;
-    }
+
     .chat-messages {
       flex: 1;
-      padding: 15px;
+      padding: 20px;
       overflow-y: auto;
-      background-color: #eef4f7;
+      background-color: #f5f9fc;
     }
+
+    .message {
+      max-width: 80%;
+      margin-bottom: 12px;
+      padding: 10px 15px;
+      border-radius: 16px;
+      font-size: 15px;
+      line-height: 1.5;
+      clear: both;
+      display: inline-block;
+    }
+
+    .message.user {
+      background-color: #d0f0c0;
+      color: #333;
+      float: right;
+      border-bottom-right-radius: 0;
+    }
+
+    .message.bot {
+      background-color: #ffffff;
+      color: #333;
+      float: left;
+      border-bottom-left-radius: 0;
+      border: 1px solid #cce3f2;
+    }
+
     .chat-input {
       display: flex;
       border-top: 1px solid #ccc;
+      background-color: #fff;
     }
+
     .chat-input input {
       flex: 1;
       border: none;
-      padding: 10px;
+      padding: 15px;
       font-size: 16px;
+      outline: none;
     }
+
     .chat-input button {
       background: #0077b6;
       color: white;
       border: none;
-      padding: 10px 15px;
+      padding: 15px 20px;
+      font-size: 16px;
       cursor: pointer;
+      transition: background 0.2s ease;
+    }
+
+    .chat-input button:hover {
+      background: #005f8e;
+    }
+
+    @media (max-width: 768px) {
+      .layout {
+        flex-direction: column;
+        height: 100vh;
+      }
+      .image-panel {
+        flex: none;
+        height: 250px;
+        border-right: none;
+        border-bottom: 1px solid #ccc;
+      }
+      .chat-panel {
+        flex: 1;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="chat-container">
-    <div class="chat-header">
-      <img src="enzychem1.png" alt="enzychem logo">
+  <div class="layout">
+    <div class="image-panel">
+      <img src="enzychem2.png" alt="enzychem logo">
     </div>
-    <div class="chat-messages" id="chat-box">
-      <div><em>무엇을 도와드릴까요? 궁금한 점을 입력해 주세요.</em></div>
-    </div>
-    <div class="chat-input">
-      <input type="text" id="user-input" placeholder="메시지를 입력하세요..." />
-      <button onclick="sendMessage()">전송</button>
+    <div class="chat-panel">
+      <div class="chat-header">
+        💬 엔지켐 챗봇
+      </div>
+      <div class="chat-messages" id="chat-box">
+        <div class="message bot">무엇을 도와드릴까요? 궁금한 점을 입력해 주세요.</div>
+      </div>
+      <div class="chat-input">
+        <input type="text" id="user-input" placeholder="메시지를 입력하세요..." />
+        <button onclick="sendMessage()">전송</button>
+      </div>
     </div>
   </div>
 
@@ -77,7 +168,8 @@
 
     function appendMessage(sender, message) {
       const msg = document.createElement("div");
-      msg.innerHTML = `<strong>${sender}:</strong> ${message}`;
+      msg.className = `message ${sender}`;
+      msg.textContent = message;
       chatBox.appendChild(msg);
       chatBox.scrollTop = chatBox.scrollHeight;
     }
@@ -86,7 +178,7 @@
       const message = userInput.value.trim();
       if (!message) return;
 
-      appendMessage("사용자", message);
+      appendMessage("user", message);
       userInput.value = "";
 
       fetch("http://localhost:5005/webhooks/rest/webhook", {
@@ -97,7 +189,7 @@
       .then(response => response.json())
       .then(data => {
         data.forEach(res => {
-          appendMessage("챗봇", res.text);
+          appendMessage("bot", res.text);
         });
       });
     }

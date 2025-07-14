@@ -1,0 +1,23 @@
+{
+  "1###BOS": {
+    "True": 0
+  },
+  "1###EOS": {
+    "True": 1
+  },
+  "1###digit": {
+    "False": 2
+  },
+  "1###low": {
+    "False": 3,
+    "True": 4
+  },
+  "1###title": {
+    "False": 5,
+    "True": 6
+  },
+  "1###upper": {
+    "False": 7,
+    "True": 8
+  }
+}

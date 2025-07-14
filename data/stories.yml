@@ -2,18 +2,65 @@ version: "3.1"
 
 stories:
 
-- story: a user asks a question and says goodbye
+- story: 인사 후 작별
   steps:
-  - intent: greet
-  - action: utter_greet
-  - intent: ask_anything
-  - action: action_dispatch_query
-  - intent: goodbye
-  - action: utter_goodbye
+    - intent: greet
+    - action: utter_greet
+    - intent: goodbye
+    - action: utter_goodbye
 
-- story: a user just wants to say hi and bye
+- story: 내부 모드 설정 후 질문
   steps:
-  - intent: greet
-  - action: utter_greet
-  - intent: goodbye
-  - action: utter_goodbye
+    - intent: set_mode
+      entities:
+        - mode: "internal"
+    - slot_was_set:
+        - mode: "internal"
+    - action: action_set_mode
+    - intent: ask_anything
+    - action: action_smart_answer
+
+- story: Gemini 모드 설정 후 질문
+  steps:
+    - intent: set_mode
+      entities:
+        - mode: "gemini"
+    - slot_was_set:
+        - mode: "gemini"
+    - action: action_set_mode
+    - intent: ask_anything
+    - action: action_smart_answer
+
+- story: 내부에서 외부로 모드 변경
+  steps:
+    - intent: set_mode
+      entities:
+        - mode: "internal"
+    - slot_was_set:
+        - mode: "internal"
+    - action: action_set_mode
+    - intent: set_mode
+      entities:
+        - mode: "gemini"
+    - slot_was_set:
+        - mode: "gemini"
+    - action: action_set_mode
+    - intent: ask_anything
+    - action: action_smart_answer
+
+- story: 외부에서 내부로 모드 변경
+  steps:
+    - intent: set_mode
+      entities:
+        - mode: "gemini"
+    - slot_was_set:
+        - mode: "gemini"
+    - action: action_set_mode
+    - intent: set_mode
+      entities:
+        - mode: "internal"
+    - slot_was_set:
+        - mode: "internal"
+    - action: action_set_mode
+    - intent: ask_anything
+    - action: action_smart_answer

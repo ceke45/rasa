@@ -1,0 +1,6 @@
+[
+  {
+    "name": "mode",
+    "pattern": "(\\binternal\\b|\\bgemini\\b|\\bGemini\\b|\\b내부\\b|\\b외부\\b)"
+  }
+]

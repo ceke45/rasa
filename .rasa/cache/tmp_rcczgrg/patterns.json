@@ -1,0 +1,22 @@
+[
+  {
+    "name": "mode",
+    "pattern": "Gemini"
+  },
+  {
+    "name": "mode",
+    "pattern": "gemini"
+  },
+  {
+    "name": "mode",
+    "pattern": "internal"
+  },
+  {
+    "name": "mode",
+    "pattern": "내부"
+  },
+  {
+    "name": "mode",
+    "pattern": "외부"
+  }
+]

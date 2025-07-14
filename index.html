@@ -65,6 +65,13 @@
       border-bottom: 1px solid #ccc;
     }
 
+    .chat-mode {
+      background-color: #f0f0f0;
+      padding: 10px;
+      text-align: center;
+      font-size: 14px;
+    }
+
     .chat-messages {
       flex: 1;
       padding: 20px;
@@ -152,6 +159,10 @@
       <div class="chat-header">
         💬 엔지켐 챗봇
       </div>
+      <div class="chat-mode">
+        <label><input type="radio" name="mode" value="internal" checked> 내부 지식 기반</label>
+        <label><input type="radio" name="mode" value="gemini"> 외부 Gemini AI</label>
+      </div>
       <div class="chat-messages" id="chat-box">
         <div class="message bot">무엇을 도와드릴까요? 궁금한 점을 입력해 주세요.</div>
       </div>
@@ -181,15 +192,28 @@
       appendMessage("user", message);
       userInput.value = "";
 
+      const mode = document.querySelector('input[name="mode"]:checked').value;
+
+      // 먼저 선택한 모드를 Rasa에게 알려줌
       fetch("http://localhost:5005/webhooks/rest/webhook", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ sender: "user", message: message })
-      })
-      .then(response => response.json())
-      .then(data => {
-        data.forEach(res => {
-          appendMessage("bot", res.text);
+        body: JSON.stringify({
+          sender: "user",
+          message: `/set_mode{"mode": "${mode}"}`
+        })
+      }).then(() => {
+        // 그 다음 실제 사용자 질문 전송
+        fetch("http://localhost:5005/webhooks/rest/webhook", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ sender: "user", message: message })
+        })
+        .then(response => response.json())
+        .then(data => {
+          data.forEach(res => {
+            appendMessage("bot", res.text);
+          });
         });
       });
     }

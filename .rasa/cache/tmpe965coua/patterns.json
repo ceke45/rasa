@@ -1,0 +1,6 @@
+[
+  {
+    "name": "mode",
+    "pattern": "(\\binternal\\b|\\bgemini\\b)"
+  }
+]

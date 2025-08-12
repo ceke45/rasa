@@ -1,14 +1,11 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>엔지켐 챗봇 시스템</title>
-  <link rel="icon" type="image/png" href="favicon.png">
+  <link rel="icon" type="image/png" href="favicon.png" />
   <style>
-    * {
-      box-sizing: border-box;
-    }
-
+    * { box-sizing: border-box; }
     body {
       font-family: 'Segoe UI', sans-serif;
       background-color: #e8f0f7;
@@ -26,7 +23,7 @@
       max-width: 1100px;
       height: 700px;
       border-radius: 16px;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
       overflow: hidden;
       background-color: #fff;
     }
@@ -40,7 +37,6 @@
       border-right: 1px solid #ddd;
       padding: 20px;
     }
-
     .image-panel img {
       width: 100%;
       height: auto;
@@ -68,8 +64,12 @@
     .chat-mode {
       background-color: #f0f0f0;
       padding: 10px;
-      text-align: center;
       font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid #e5e5e5;
     }
 
     .chat-messages {
@@ -88,15 +88,16 @@
       line-height: 1.5;
       clear: both;
       display: inline-block;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      white-space: pre-wrap;
     }
-
     .message.user {
       background-color: #d0f0c0;
       color: #333;
       float: right;
       border-bottom-right-radius: 0;
     }
-
     .message.bot {
       background-color: #ffffff;
       color: #333;
@@ -107,85 +108,121 @@
 
     .chat-input {
       display: flex;
+      align-items: center;
+      gap: 10px;
       border-top: 1px solid #ccc;
       background-color: #fff;
+      padding: 10px;
     }
 
-    .chat-input input {
+    .file-controls {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .file-name {
+      font-size: 12px;
+      color: #555;
+      max-width: 220px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .chat-input input[type="text"] {
       flex: 1;
-      border: none;
-      padding: 15px;
+      border: 1px solid #ddd;
+      padding: 12px 14px;
       font-size: 16px;
       outline: none;
+      border-radius: 10px;
+      background: #fff;
     }
 
-    .chat-input button {
+    .btn {
       background: #0077b6;
       color: white;
       border: none;
-      padding: 15px 20px;
-      font-size: 16px;
+      padding: 10px 14px;
+      font-size: 14px;
       cursor: pointer;
       transition: background 0.2s ease;
+      border-radius: 10px;
     }
-
-    .chat-input button:hover {
-      background: #005f8e;
-    }
+    .btn:hover { background: #005f8e; }
+    .btn.secondary { background: #6c757d; }
+    .btn.secondary:hover { background: #565e64; }
 
     @media (max-width: 768px) {
-      .layout {
-        flex-direction: column;
-        height: 100vh;
-      }
-      .image-panel {
-        flex: none;
-        height: 250px;
-        border-right: none;
-        border-bottom: 1px solid #ccc;
-      }
-      .chat-panel {
-        flex: 1;
-      }
+      .layout { flex-direction: column; height: 100vh; }
+      .image-panel { flex: none; height: 220px; border-right: none; border-bottom: 1px solid #ccc; }
+      .chat-panel { flex: 1; }
+      .file-name { display: none; }
     }
   </style>
 </head>
 <body>
   <div class="layout">
     <div class="image-panel">
-      <img src="enzychem2.png" alt="enzychem logo">
+      <img src="enzychem2.png" alt="enzychem logo" />
     </div>
+
     <div class="chat-panel">
-      <div class="chat-header">
-        💬 엔지켐 챗봇
-      </div>
+      <div class="chat-header">💬 엔지켐 챗봇</div>
+
       <div class="chat-mode">
         <label><input type="radio" name="mode" value="internal" checked> 내부 지식 기반</label>
         <label><input type="radio" name="mode" value="gemini"> 외부 Gemini AI</label>
       </div>
+
       <div class="chat-messages" id="chat-box">
         <div class="message bot">무엇을 도와드릴까요? 궁금한 점을 입력해 주세요.</div>
       </div>
+
+      <!-- ↓↓↓ 파일 첨부 & 업로드 요약을 입력창 왼쪽으로 이동 ↓↓↓ -->
       <div class="chat-input">
+        <div class="file-controls">
+          <input type="file" id="fileInput" style="display:none" />
+          <button class="btn secondary" id="attachBtn" type="button">📎 첨부</button>
+          <button class="btn" id="uploadBtn" type="button">업로드 요약</button>
+          <span class="file-name" id="fileName">선택된 파일 없음</span>
+        </div>
+
         <input type="text" id="user-input" placeholder="메시지를 입력하세요..." />
-        <button onclick="sendMessage()">전송</button>
+        <button class="btn" id="sendBtn" type="button">전송</button>
       </div>
+      <!-- ↑↑↑ -->
     </div>
   </div>
 
   <script>
-    const chatBox = document.getElementById("chat-box");
+    const chatBox   = document.getElementById("chat-box");
     const userInput = document.getElementById("user-input");
+    const sendBtn   = document.getElementById("sendBtn");
+
+    const fileInput = document.getElementById("fileInput");
+    const attachBtn = document.getElementById("attachBtn");
+    const uploadBtn = document.getElementById("uploadBtn");
+    const fileName  = document.getElementById("fileName");
 
     function appendMessage(sender, message) {
       const msg = document.createElement("div");
       msg.className = `message ${sender}`;
-      msg.textContent = message;
+      msg.innerHTML = message; // 링크/줄바꿈 허용
       chatBox.appendChild(msg);
       chatBox.scrollTop = chatBox.scrollHeight;
     }
 
-    function sendMessage() {
+    async function postJSON(url, body) {
+      const res = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body)
+      });
+      return res.json();
+    }
+
+    async function sendMessage() {
       const message = userInput.value.trim();
       if (!message) return;
 
@@ -194,33 +231,77 @@
 
       const mode = document.querySelector('input[name="mode"]:checked').value;
 
-      // 먼저 선택한 모드를 Rasa에게 알려줌
-      fetch("http://localhost:5005/webhooks/rest/webhook", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          sender: "user",
-          message: `/set_mode{"mode": "${mode}"}`
-        })
-      }).then(() => {
-        // 그 다음 실제 사용자 질문 전송
-        fetch("http://localhost:5005/webhooks/rest/webhook", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ sender: "user", message: message })
-        })
-        .then(response => response.json())
-        .then(data => {
-          data.forEach(res => {
-            appendMessage("bot", res.text);
-          });
-        });
+      // 1) 모드 설정
+      await postJSON("/send", { text: `/set_mode{"mode":"${mode}"}` });
+
+      // 2) 사용자 메시지
+      const data = await postJSON("/send", { text: message });
+      (data || []).forEach(m => {
+        if (m.text) appendMessage("bot", m.text);
       });
     }
 
-    userInput.addEventListener("keydown", function(e) {
-      if (e.key === "Enter") sendMessage();
+    function humanFileSize(bytes) {
+      if (!bytes && bytes !== 0) return "";
+      const thresh = 1024;
+      if (Math.abs(bytes) < thresh) return bytes + ' B';
+      const units = ['KB','MB','GB','TB'];
+      let u = -1;
+      do { bytes /= thresh; ++u; } while (Math.abs(bytes) >= thresh && u < units.length - 1);
+      return bytes.toFixed(1)+' '+units[u];
+    }
+
+    // 파일 첨부 버튼
+    attachBtn.addEventListener("click", () => fileInput.click());
+
+    // 파일 선택 시 파일명 표시
+    fileInput.addEventListener("change", () => {
+      const f = fileInput.files && fileInput.files[0];
+      if (f) fileName.textContent = `${f.name} (${humanFileSize(f.size)})`;
+      else   fileName.textContent = "선택된 파일 없음";
     });
+
+    // 업로드 요약
+    async function uploadAndSummarize() {
+      const f = fileInput.files && fileInput.files[0];
+      if (!f) {
+        appendMessage("bot", "📎 업로드할 파일을 먼저 선택해 주세요.");
+        return;
+      }
+
+      appendMessage("bot", `파일 업로드 중... (${f.name})`);
+
+      const fd = new FormData();
+      fd.append("file", f);
+
+      try {
+        const res = await fetch("/upload", { method: "POST", body: fd });
+        const j = await res.json();
+
+        if (!j.ok) {
+          appendMessage("bot", "업로드 실패: " + (j.msg || "알 수 없는 오류"));
+          return;
+        }
+
+        if (j.replies && j.replies.length) {
+          j.replies.forEach(t => appendMessage("bot", t));
+        } else {
+          appendMessage("bot", "요약 결과가 비어 있습니다.");
+        }
+      } catch (e) {
+        appendMessage("bot", "업로드/요약 중 오류: " + e);
+      } finally {
+        // 파일 입력 초기화(같은 파일 다시 선택해도 change 발생하도록)
+        fileInput.value = "";
+        fileName.textContent = "선택된 파일 없음";
+      }
+    }
+
+    uploadBtn.addEventListener("click", uploadAndSummarize);
+
+    // 텍스트 전송
+    sendBtn.addEventListener("click", sendMessage);
+    userInput.addEventListener("keydown", (e) => { if (e.key === "Enter") sendMessage(); });
   </script>
 </body>
 </html>

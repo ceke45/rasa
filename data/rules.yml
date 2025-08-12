@@ -26,3 +26,8 @@ rules:
   steps:
     - intent: ask_anything
     - action: action_smart_answer
+
+- rule: summarize when file uploaded
+  steps:
+    - intent: file_uploaded
+    - action: action_summarize_file

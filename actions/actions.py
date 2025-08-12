@@ -1,142 +1,253 @@
-
-import requests
+# actions.py
+import os
+import time
+import mimetypes
 from typing import Any, Text, Dict, List
 from datetime import datetime
+
 import pytz
+import requests
+import pandas as pd
+
 from rasa_sdk import Action, Tracker
 from rasa_sdk.executor import CollectingDispatcher
 from rasa_sdk.events import SlotSet
+from rasa_sdk.types import DomainDict
 
-# ----------------------------------------------------------------------
-# ★ 1. 회사 내부 지식 베이스
-# ----------------------------------------------------------------------
-COMPANY_KB = {
-    "회사이름": "저희 회사는 '엔지켐생명과학' 입니다.",
-    "주소": "저희 대표 회사주소는 서울 서초구 강남대로 27, at센터 10층,14층에 있습니다.",
-    "대표": "저희 회사 회장님 성함은 '손기영' 입니다.",
-    "설립일": "저희 회사는 1997년 07월에 설립되었습니다.",
-    "비전": "저희 회사의 비전은 '세계 1등 바이오·제약 챔피언, 건강장수 130, 엔지켐생명과학 3.0, 아름다운 삶 3.0' 입니다.",
-    "R&D전략개발실": "R&D전략개발실은 신약 개발과 임상시험을 담당하며, 14층에 위치해 있습니다. 팀장은 김정석 이사입니다.",
-    "국내영업팀": "국내영업팀은 제품 판매와 고객 관리를 담당하며, 14층에 위치해 있습니다. 팀장은 윤두환 차장입니다.",
-    "인사팀": "인사팀은 채용, 교육, 복리후생을 담당하며, 10층에 위치해 있습니다. 팀장은 김성국 이사입니다.",
-    "회계·세무팀": "회계·세무팀은 회계, 세무, 자금 관리를 담당하며, 10층에 위치해 있습니다. 팀장은 박성법 차장입니다.",
-    "IT팀": "IT팀은 시스템 개발과 유지보수를 담당하며, 14층에 위치해 있습니다. 팀장은 장우혁 차장입니다.",
-    "자금팀": "자금팀은 결제관련 업무 및 법인카드 관리를 담당하며,10층에 위치해 있습니다. 팀장은 이은옥 차장입니다.",
-    "경영기획팀": "경영기획팀은 결제관련 내부회계 관련 업무를 담당하며,10층에 위치해 있습니다. 팀장은 이경석 차장입니다.",
-    "글로벌건강기능식품팀": "글로벌건강기능식품팀은 건강기능식품 판매 및 관리 업무를 담당하며,10층에 위치해 있습니다. 팀장은 홍석민 부장입니다.",
-    "휴가신청": "휴가신청은 인사시스템에서 신청하시면 됩니다. 연차는 15일, 반차는 0.5일로 계산됩니다.",
-    "출장신청": "출장신청은 그룹웨어 전자결제를 통해 미리 신청서를 제출하고 승인을 받으셔야 합니다.",
-    "구매신청": "구매신청은 전자결제 기안서를 통해서 진행하며, 사무용품인 경우 총무IT팀이 담당하고 있습니다.",
-    "회의실예약": "회의실 예약은 그룹웨어의 '예약'을 통해서 진행할 수 있으며, 10층과 14층에 회의실이 있습니다.",
-    "점심시간": "점심시간은 11시30분부터 12시30분, 12시30분부터 1시30분까지입니다. 지하1층 AT뷔페, 더온담, 영등포구석집, 싸다김밥에서 식사 가능합니다.",
-    "퇴근시간": "퇴근시간은 오후 6시입니다. 퇴근 시 지문 등록을 꼭 하시길 바랍니다.",
-    "주차": "주차 지원은 별도로 없으나, 원하실 경우 AT센터 지하 혹은 근처 공영주차장에 주차 가능합니다.",
-    "연차수당": "연차를 다 소진하지 못할 경우 연차 수당이 지급됩니다.",
-    "IT지원": "IT지원팀 연락처는 02-6213-7184입니다. 시스템 문제 시 언제든 연락주세요.",
-    "보안팀": "보안팀의 공식적인 연락처는 사내 인트라넷을 확인해주시기 바랍니다. 출입증 분실 시 즉시 연락해야 합니다.",
-    "복장규정": "무난한 캐주얼 복장을 선호합니다.",
-    "출근시간": "출근시간은 오전 9시이며, 10분 전까지 도착하여 업무 준비를 권장드립니다.",
-    "보안규정": "회사 내에서는 보안상 개인 PC에 파일 저장이 어렵습니다(TXT, 이미지 제외). 문서중앙화를 통해 작성 바랍니다."
-}
-
-# ----------------------------------------------------------------------
-# ★ 2. Gemini API 설정
-# ----------------------------------------------------------------------
-GEMINI_API_KEY = "AIzaSyC0dAtVCMLn-CqwDYK8-mwnaIvZ4EDNpNs"
-API_URL = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={GEMINI_API_KEY}"
+# Gemini SDK (파일 요약용)
+import google.generativeai as genai
 
 
+# ============================================================================
+# 0) 환경/상수
+# ============================================================================
+# ▶ 필요 패키지: pip install rasa-sdk google-generativeai pandas openpyxl
+GEMINI_API_KEY: str = "AIzaSyC0dAtVCMLn-CqwDYK8-mwnaIvZ4EDNpNs"  # 하드코딩 버전
+CHAT_MODEL_URL: str = (
+    f"https://generativelanguage.googleapis.com/v1beta/models/"
+    f"gemini-1.5-flash:generateContent?key={GEMINI_API_KEY}"
+)
+FILE_MODEL_NAME: str = "models/gemini-1.5-pro"  # 무료키/권한 문제 있으면 flash로 바꿔도 됨
+genai.configure(api_key=GEMINI_API_KEY)
+g_model = genai.GenerativeModel(FILE_MODEL_NAME)
+
+# KB 파일 경로(확장자에 따라 자동 처리). 기본값은 탭구분 텍스트.
+KB_PATH = os.getenv("KB_PATH", "kb.txt")  # 예: "kb.xlsx" / "kb.csv" / "kb.txt"
+KB_SEP = os.getenv("KB_SEP", "\t")        # txt/csv일 때 컬럼 구분자(기본: 탭)
+
+
+# ============================================================================
+# 1) KB 캐시 (TXT/CSV/XLSX -> 메모리 로드)
+#    - 필수 컬럼: topic, answer
+#    - 선택 컬럼: synonyms (쉼표 구분 동의어들)
+# ============================================================================
+class KBCache:
+    def __init__(self, path: str):
+        self.path = path
+        self.mtime = 0.0
+        self.topics: Dict[str, str] = {}     # {topic: answer}
+        self.synonyms: Dict[str, str] = {}   # {phrase_lower: topic}
+        self._load(force=True)
+
+    def _load(self, force: bool = False):
+        if not os.path.exists(self.path):
+            if force:
+                print(f"[KB] 파일이 없습니다: {self.path}")
+            return
+
+        cur = os.path.getmtime(self.path)
+        if (cur == self.mtime) and not force:
+            return
+
+        ext = os.path.splitext(self.path)[1].lower()
+        if ext in [".xlsx", ".xls"]:
+            # Excel: 시트명 'kb' 사용 가정
+            df = pd.read_excel(self.path, sheet_name="kb")
+        elif ext == ".csv":
+            df = pd.read_csv(self.path)
+        else:
+            # txt 등: 기본은 탭 구분
+            df = pd.read_csv(self.path, sep=KB_SEP)
+
+        # 컬럼 이름 케이스 섞여도 인식되게
+        cols_lower = {c.lower(): c for c in df.columns}
+
+        def need(col: str) -> str:
+            if col in cols_lower:
+                return cols_lower[col]
+            raise ValueError(f"[KB] '{col}' 컬럼이 없습니다. 현재 컬럼: {list(df.columns)}")
+
+        tcol = need("topic")
+        acol = need("answer")
+        scol = cols_lower.get("synonyms", None)  # 선택
+
+        topics: Dict[str, str] = {}
+        synonyms: Dict[str, str] = {}
+
+        for _, row in df.iterrows():
+            topic = "" if pd.isna(row[tcol]) else str(row[tcol]).strip()
+            if not topic:
+                continue
+            answer = "" if pd.isna(row[acol]) else str(row[acol]).strip()
+            topics[topic] = answer
+
+            # topic 자체도 키워드로
+            synonyms[topic.lower()] = topic
+
+            # 동의어(쉼표 구분)
+            if scol and not pd.isna(row[scol]):
+                syns = [s.strip() for s in str(row[scol]).split(",") if str(s).strip()]
+                for phrase in syns:
+                    synonyms[phrase.lower()] = topic
+
+        self.topics = topics
+        self.synonyms = synonyms
+        self.mtime = cur
+        print(f"[KB] 로드 완료: {self.path} (rows={len(self.topics)})")
+
+    def maybe_reload(self):
+        self._load()
+
+    def find_topic(self, user_text: str) -> str:
+        """동의어/키워드 부분일치로 topic 찾기 (긴 키워드 우선)"""
+        self.maybe_reload()
+        text = (user_text or "").lower()
+        keys = sorted(self.synonyms.keys(), key=len, reverse=True)
+        for k in keys:
+            if k and (k in text):
+                return self.synonyms[k]
+        return ""
+
+    def get_answer(self, topic: str) -> str:
+        return self.topics.get(topic, "")
+
+
+KB = KBCache(KB_PATH)
+
+
+# ============================================================================
+# 2) 유틸
+# ============================================================================
+def now_in_seoul() -> str:
+    seoul_time = datetime.now(pytz.timezone("Asia/Seoul"))
+    return seoul_time.strftime("%Y년 %m월 %d일 %A %p %I시 %M분")
+
+
+def is_time_question(msg: str) -> bool:
+    msg = (msg or "").lower()
+    triggers = ["현재 시간", "지금 몇시", "몇시", "오늘 날짜", "날짜", "오늘"]
+    return any(t.lower() in msg for t in triggers)
+
+
+# ============================================================================
+# 3) 내부/외부(제미나이) 응답 액션
+# ============================================================================
 class ActionSmartAnswer(Action):
     def name(self) -> Text:
         return "action_smart_answer"
 
-    def run(self, dispatcher: CollectingDispatcher,
-            tracker: Tracker,
-            domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+    def run(
+        self,
+        dispatcher: CollectingDispatcher,
+        tracker: Tracker,
+        domain: Dict[Text, Any],
+    ) -> List[Dict[Text, Any]]:
         mode = tracker.get_slot("mode")
-        user_message = tracker.latest_message.get('text', '').strip()
+        user_message = tracker.latest_message.get("text", "").strip()
+
         if not mode:
             dispatcher.utter_message(text="먼저 모드를 선택해 주세요. (내부/외부)")
             return []
+
         if mode == "internal":
-            topic = self._find_topic_by_keywords(user_message.lower())
-            if topic == "현재시간":
-                dispatcher.utter_message(text=self._get_current_time())
-            elif topic:
-                dispatcher.utter_message(text=COMPANY_KB.get(topic))
-            elif self._is_company_category_query(user_message):
+            if is_time_question(user_message):
+                dispatcher.utter_message(text=f"현재 한국 시간은 {now_in_seoul()}입니다. 😊")
+                return []
+
+            topic = KB.find_topic(user_message)
+            if topic:
+                ans = KB.get_answer(topic).strip()
+                if ans:
+                    dispatcher.utter_message(text=ans)
+                else:
+                    dispatcher.utter_message(text="내부 지식에서 답변이 비어 있습니다. KB를 확인해 주세요.")
+                return []
+
+            if self._is_company_category_query(user_message):
                 dispatcher.utter_message(text=self._get_category_guide(user_message))
             else:
                 dispatcher.utter_message(text="내부 지식에서는 해당 질문에 대한 답을 찾을 수 없어요.")
+            return []
+
         elif mode == "gemini":
             self._call_gemini_api(dispatcher, user_message)
+            return []
+
         else:
             dispatcher.utter_message(text="⚠️ 모드를 인식하지 못했어요. 다시 시도해주세요.")
-        return []
+            return []
 
+    # ---- 외부(Gemini) 호출 (채팅/질의응답용: REST) ----
     def _call_gemini_api(self, dispatcher: CollectingDispatcher, message: str):
-        headers = {'Content-Type': 'application/json'}
-        prompt = f"너는 '엔지켐생명과학'의 사내 업무를 도와주는 친절한 AI 비서야. 다음 질문에 대해 간결하고 명확하게 답변해줘. 질문: {message}"
+        headers = {"Content-Type": "application/json"}
+        prompt = (
+            "너는 '엔지켐생명과학'의 사내 업무를 도와주는 친절한 AI 비서야. "
+            "과도한 수식어 없이 간결하고 정확하게 답해줘.\n\n"
+            f"질문: {message}"
+        )
         data = {"contents": [{"parts": [{"text": prompt}]}]}
         try:
-            response = requests.post(API_URL, headers=headers, json=data, timeout=30)
-            response.raise_for_status()
-            text = response.json()['candidates'][0]['content']['parts'][0]['text']
-            dispatcher.utter_message(text=text)
+            r = requests.post(CHAT_MODEL_URL, headers=headers, json=data, timeout=30)
+            if not r.ok:
+                dispatcher.utter_message(text=f"Gemini API 오류: HTTP {r.status_code}\n{r.text[:800]}")
+                return
+            j = r.json()
+            text = ""
+            if j.get("candidates"):
+                parts = j["candidates"][0].get("content", {}).get("parts", [])
+                if parts and parts[0].get("text"):
+                    text = parts[0]["text"]
+            if not text:
+                dispatcher.utter_message(text="Gemini 응답이 비어 있습니다. 잠시 후 다시 시도해 주세요.")
+                return
+            dispatcher.utter_message(text=text.strip())
         except requests.exceptions.Timeout:
-            dispatcher.utter_message(text="죄송합니다, 답변을 생성하는 데 너무 오래 걸려요.")
-        except Exception:
-            dispatcher.utter_message(text="죄송합니다. Gemini API 응답 중 오류가 발생했어요.")
+            dispatcher.utter_message(text="Gemini 응답 지연(타임아웃)입니다. 잠시 후 다시 시도해 주세요.")
+        except Exception as e:
+            dispatcher.utter_message(text=f"Gemini 호출 중 예외: {e}")
 
-    def _find_topic_by_keywords(self, message: str) -> str:
-        keyword_mapping = {
-            "오늘 날짜": "현재시간", "날짜": "현재시간", "오늘": "현재시간",
-            "현재 시간": "현재시간", "시간": "현재시간", "지금 몇시": "현재시간", "몇시": "현재시간",
-            "회사 이름": "회사이름", "회사명": "회사이름", "회사주소": "주소", "회사 주소": "주소",
-            "회사 대표": "대표", "회사 회장": "대표", "대표이사": "대표",
-            "회사 비전": "비전", "설립일": "설립일", "창립일": "설립일",
-            "it팀": "IT팀", "자금팀": "자금팀", "보안팀": "보안팀", "복장 규정": "복장규정",
-            "출근시간": "출근시간", "보안 규정": "보안규정"
-        }
-        sorted_keys = sorted(keyword_mapping.keys(), key=len, reverse=True)
-        for keyword in sorted_keys:
-            if keyword in message:
-                return keyword_mapping[keyword]
-        return ""
-
-    def _get_current_time(self) -> str:
-        seoul_time = datetime.now(pytz.timezone("Asia/Seoul"))
-        return f"현재 한국 시간은 {seoul_time.strftime('%Y년 %m월 %d일 %A %p %I시 %M분')}입니다. 😊"
-
+    # ---- 회사 카테고리형 질의 탐지/가이드(선택) ----
     def _is_company_category_query(self, message: str) -> bool:
-        return any(word in message for word in ["부서", "팀", "업무", "프로세스", "신청", "복리", "후생", "규정", "정책", "연락처"])
+        msg = message or ""
+        return any(w in msg for w in ["부서", "팀", "업무", "프로세스", "신청", "복리", "후생", "규정", "정책", "연락처"])
 
     def _get_category_guide(self, message: str) -> str:
-        if any(word in message for word in ["부서", "팀", "조직"]):
+        msg = message or ""
+        if any(w in msg for w in ["부서", "팀", "조직"]):
             return "어떤 부서 정보가 궁금하신가요? (예: R&D전략개발실, 국내영업팀, IT팀 등)"
-        elif any(word in message for word in ["업무", "프로세스", "신청"]):
+        elif any(w in msg for w in ["업무", "프로세스", "신청"]):
             return "어떤 업무 프로세스가 궁금하신가요? (예: 휴가신청, 출장신청 등)"
-        elif any(word in message for word in ["복리", "후생", "혜택"]):
+        elif any(w in msg for w in ["복리", "후생", "혜택"]):
             return "복리후생 정보 중 어떤 부분이 궁금하신가요? (예: 점심시간, 주차, 연차수당 등)"
         else:
             return "안녕하세요! 회사 정보를 도와드릴게요. '회사 주소', '휴가 신청 방법'과 같이 질문해주시면 답변해드릴 수 있습니다."
 
+
+# ============================================================================
+# 4) 모드 설정
+# ============================================================================
 class ActionSetMode(Action):
     def name(self) -> Text:
         return "action_set_mode"
 
-    def run(self, dispatcher: CollectingDispatcher,
-            tracker: Tracker,
-            domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
-
+    def run(
+        self,
+        dispatcher: CollectingDispatcher,
+        tracker: Tracker,
+        domain: Dict[Text, Any],
+    ) -> List[Dict[Text, Any]]:
         raw_mode = tracker.get_slot("mode")
-
-        # 한글 모드명 변환
-        mode_map = {
-            "내부": "internal",
-            "외부": "gemini",
-            "Gemini": "gemini"
-        }
+        mode_map = {"내부": "internal", "외부": "gemini", "Gemini": "gemini"}
         mode = mode_map.get(raw_mode, raw_mode)
 
         if mode == "internal":
@@ -148,12 +259,111 @@ class ActionSetMode(Action):
 
         return [SlotSet("mode", mode)]
 
-class ActionSetMode(Action):
+
+# ============================================================================
+# 5) 파일 요약 액션 (PDF/Excel/CSV)
+# ============================================================================
+class ActionSummarizeFile(Action):
     def name(self) -> Text:
-        return "action_set_mode"
+        return "action_summarize_file"
 
-    def run(self, dispatcher: CollectingDispatcher,
-            tracker: Tracker,
-            domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+    def run(
+        self,
+        dispatcher: CollectingDispatcher,
+        tracker: Tracker,
+        domain: DomainDict,
+    ) -> List[Dict[Text, Any]]:
 
-        raw_mode = tracker.get_slot("mode")
+        file_path = tracker.get_slot("uploaded_file_path")
+        file_mime = tracker.get_slot("uploaded_file_mime")
+
+        if not file_path:
+            dispatcher.utter_message(text="업로드된 파일이 없어요. 먼저 파일을 올려주세요.")
+            return []
+
+        if not file_mime:
+            guessed, _ = mimetypes.guess_type(file_path)
+            file_mime = guessed or "application/octet-stream"
+
+        try:
+            if file_mime == "application/pdf":
+                uploaded = genai.upload_file(path=file_path, mime_type="application/pdf")
+                prompt = {
+                    "role": "user",
+                    "parts": [
+                        {"file_data": {"file_uri": uploaded.uri, "mime_type": "application/pdf"}},
+                        {"text": "이 문서의 핵심을 5~7개 불릿으로 요약하고, 액션아이템이 있으면 따로 정리해줘."},
+                    ],
+                }
+                resp = g_model.generate_content(prompt)
+                dispatcher.utter_message(text=(getattr(resp, "text", "") or "").strip())
+
+            elif file_mime in (
+                "application/vnd.ms-excel",
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            ):
+                df = pd.read_excel(file_path)
+                head = df.head(30).to_markdown(index=False)
+                stats = df.describe(include="all").to_markdown()
+                prompt = f"""
+다음 표 데이터에서 핵심 인사이트/추세/이상치/추천 액션을 간결한 불릿으로 요약해줘.
+[미리보기(최대 30행)]
+{head}
+
+[기본 통계]
+{stats}
+"""
+                resp = g_model.generate_content(prompt)
+                dispatcher.utter_message(text=(getattr(resp, "text", "") or "").strip())
+
+            elif file_mime == "text/csv":
+                df = pd.read_csv(file_path)
+                head = df.head(30).to_markdown(index=False)
+                stats = df.describe(include="all").to_markdown()
+                prompt = f"""
+CSV 데이터 요약: 핵심 지표/추세/이상치/권고사항을 불릿으로 정리해줘.
+[미리보기]
+{head}
+
+[기본 통계]
+{stats}
+"""
+                resp = g_model.generate_content(prompt)
+                dispatcher.utter_message(text=(getattr(resp, "text", "") or "").strip())
+            else:
+                dispatcher.utter_message(text=f"현재 지원하지 않는 파일 형식입니다: {file_mime}. PDF/Excel/CSV를 올려주세요.")
+
+        except Exception as e:
+            dispatcher.utter_message(text=f"요약 중 오류가 발생했습니다: {e}")
+
+        return []
+
+
+# ============================================================================
+# 6) 스텁 액션 (도메인 등록 대응)
+# ============================================================================
+class ActionAnswerInternal(Action):
+    def name(self) -> Text:
+        return "action_answer_internal"
+
+    def run(self, dispatcher: CollectingDispatcher, tracker: Tracker, domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+        dispatcher.utter_message(text="(안내) 내부 답변은 action_smart_answer에서 처리합니다.")
+        return []
+
+
+class ActionAnswerGemini(Action):
+    def name(self) -> Text:
+        return "action_answer_gemini"
+
+    def run(self, dispatcher: CollectingDispatcher, tracker: Tracker, domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+        dispatcher.utter_message(text="(안내) Gemini 답변은 action_smart_answer에서 처리합니다.")
+        return []
+
+
+class ActionDispatchQuery(Action):
+    def name(self) -> Text:
+        return "action_dispatch_query"
+
+    def run(self, dispatcher: CollectingDispatcher, tracker: Tracker, domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+        dispatcher.utter_message(text="(안내) 질의 분기는 action_smart_answer에서 처리합니다.")
+        return []

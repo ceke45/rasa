@@ -1,0 +1,20 @@
+version: '3.9'
+
+services:
+  actions:
+    build:
+      context: ./actions
+      dockerfile: Dockerfile
+    container_name: action_server
+    ports:
+      - "5055:5055"
+    volumes:
+      - ./actions:/app/actions
+
+  ui:
+    build:
+      context: .
+      dockerfile: Dockerfile.ui
+    container_name: flask_ui
+    ports:
+      - "8080:8080"

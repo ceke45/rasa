@@ -10,8 +10,11 @@
 # Server which runs your custom actions.
 # https://rasa.com/docs/rasa/custom-actions
 
+
+#docker 이미지 빌드시 아래 두줄 주석처리
 action_endpoint:
-  url: "http://localhost:5055/webhook"
+   url: "http://localhost:5055/webhook"
+#-------------------------------------------
 
 # Tracker store which is used to store the conversations.
 # By default the conversations are stored in memory.

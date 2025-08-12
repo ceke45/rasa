@@ -6,9 +6,12 @@ intents:
   - ask_anything
   - set_mode
   - restart
+  - file_uploaded
 
 entities:
-  - mode 
+  - mode
+  - uploaded_file_path
+  - uploaded_file_mime
 
 slots:
   mode:
@@ -18,25 +21,34 @@ slots:
       - type: from_entity
         entity: mode
 
+  uploaded_file_path:
+    type: text
+    influence_conversation: false
+    mappings:
+      - type: from_entity
+        entity: uploaded_file_path
+
+  uploaded_file_mime:
+    type: text
+    influence_conversation: false
+    mappings:
+      - type: from_entity
+        entity: uploaded_file_mime
+
 responses:
   utter_greet:
     - text: "안녕하세요! 무엇을 도와드릴까요?"
-
   utter_goodbye:
     - text: "안녕히 가세요! 언제든 다시 찾아주세요."
-
   utter_mode_set_internal:
     - text: "🧠 내부 지식 기반 모드로 전환했어요."
-
   utter_mode_set_gemini:
     - text: "🤖 외부 Gemini AI 모드로 전환했어요."
 
 actions:
   - action_set_mode
-  - action_answer_internal
-  - action_answer_gemini
-  - action_dispatch_query
   - action_smart_answer
+  - action_summarize_file
 
 session_config:
   session_expiration_time: 60

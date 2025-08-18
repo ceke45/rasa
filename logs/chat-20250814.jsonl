@@ -1,0 +1,23 @@
+{"ts": "2025-08-14T07:19:39.789072Z", "sender_id": "local-user", "role": "user", "text": "회사주소", "mode": "", "meta": {}}
+{"ts": "2025-08-14T07:19:43.934866Z", "sender_id": "local-user", "role": "bot", "text": "저희 대표 회사주소는 서울 서초구 강남대로 27, at센터 10층,14층에 있습니다.", "mode": "", "meta": {}}
+{"ts": "2025-08-14T07:20:18.273948Z", "sender_id": "local-user", "role": "user", "text": "1+1은 머야", "mode": "", "meta": {}}
+{"ts": "2025-08-14T07:29:16.481860Z", "sender_id": "local-user", "role": "user", "text": "자금팀", "mode": "", "meta": {}}
+{"ts": "2025-08-14T07:29:20.653588Z", "sender_id": "local-user", "role": "bot", "text": "자금팀은 결제관련 업무 및 법인카드 관리를 담당하며, 10층에 위치해 있습니다. 팀장은 이은옥 차장입니다.", "mode": "", "meta": {}}
+{"ts": "2025-08-14T07:29:32.966029Z", "sender_id": "local-user", "role": "user", "text": "출근 시간", "mode": "", "meta": {}}
+{"ts": "2025-08-14T07:29:37.078351Z", "sender_id": "local-user", "role": "bot", "text": "출근시간은 오전 9시이며, 10분 전까지 도착하여 업무 준비를 권장드립니다.", "mode": "", "meta": {}}
+{"ts": "2025-08-14T07:35:44.878833Z", "sender_id": "local-user", "role": "user", "text": "회사 주소", "mode": "", "meta": {}}
+{"ts": "2025-08-14T07:35:49.092538Z", "sender_id": "local-user", "role": "bot", "text": "저희 대표 회사주소는 서울 서초구 강남대로 27, at센터 10층,14층에 있습니다.", "mode": "", "meta": {}}
+{"ts": "2025-08-14T07:36:08.068614Z", "sender_id": "local-user", "role": "user", "text": "회사 비전", "mode": "", "meta": {}}
+{"ts": "2025-08-14T07:36:12.247632Z", "sender_id": "local-user", "role": "bot", "text": "저희 회사의 비전은 '세계 1등 바이오·제약 챔피언, 건강장수 130, 엔지켐생명과학 3.0, 아름다운 삶 3.0' 입니다.", "mode": "", "meta": {}}
+{"ts": "2025-08-14T07:58:31.322522Z", "sender_id": "local-user", "role": "user", "text": "회사 주소", "mode": "", "meta": {}}
+{"ts": "2025-08-14T07:58:35.488541Z", "sender_id": "local-user", "role": "bot", "text": "저희 대표 회사주소는 서울 서초구 강남대로 27, at센터 10층,14층에 있습니다.", "mode": "", "meta": {}}
+{"ts": "2025-08-14T07:59:15.705016Z", "sender_id": "local-user", "role": "user", "text": "우주에서 가장 밝은별은 머야?", "mode": "", "meta": {}}
+{"ts": "2025-08-14T07:59:20.861418Z", "sender_id": "local-user", "role": "bot", "text": "시리우스", "mode": "", "meta": {}}
+{"ts": "2025-08-14T08:08:50.585264Z", "ts_kst": "2025-08-14T17:08:50+09:00", "ts_kst_human": "2025-08-14 (Thu) 17:08:50", "sender_id": "local-user", "role": "user", "text": "회사 주소", "mode": "", "meta": {}}
+{"ts": "2025-08-14T08:08:54.769582Z", "ts_kst": "2025-08-14T17:08:54+09:00", "ts_kst_human": "2025-08-14 (Thu) 17:08:54", "sender_id": "local-user", "role": "bot", "text": "저희 대표 회사주소는 서울 서초구 강남대로 27, at센터 10층,14층에 있습니다.", "mode": "", "meta": {}}
+{"ts_kst": "2025-08-14T17:26:21+09:00", "ts_kst_human": "2025-08-14 (Thu) 17:26:21", "sender_id": "local-user", "role": "user", "text": "회사 주소", "mode": "", "meta": {}}
+{"ts_kst": "2025-08-14T17:26:25+09:00", "ts_kst_human": "2025-08-14 (Thu) 17:26:25", "sender_id": "local-user", "role": "bot", "text": "저희 대표 회사주소는 서울 서초구 강남대로 27, at센터 10층,14층에 있습니다.", "mode": "", "meta": {}}
+{"ts_kst": "2025-08-14T17:26:44+09:00", "ts_kst_human": "2025-08-14 (Thu) 17:26:44", "sender_id": "local-user", "role": "user", "text": "우주에서 가장 작은 별은 머야?", "mode": "", "meta": {}}
+{"ts_kst": "2025-08-14T17:26:50+09:00", "ts_kst_human": "2025-08-14 (Thu) 17:26:50", "sender_id": "local-user", "role": "bot", "text": "현재까지 알려진 우주에서 가장 작은 별은 EBLM J0555-57Ab 입니다.", "mode": "", "meta": {}}
+{"ts_kst": "2025-08-14T17:34:53+09:00", "ts_kst_human": "2025-08-14 (Thu) 17:34:53", "sender_id": "local-user", "role": "user", "text": "IT지원", "mode": "", "meta": {}}
+{"ts_kst": "2025-08-14T17:34:57+09:00", "ts_kst_human": "2025-08-14 (Thu) 17:34:57", "sender_id": "local-user", "role": "bot", "text": "IT지원팀 연락처는 02-6213-7184입니다. 시스템 문제 시 언제든 연락주세요.", "mode": "", "meta": {}}

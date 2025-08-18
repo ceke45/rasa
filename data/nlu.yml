@@ -1,6 +1,22 @@
 version: "3.1"
 
 nlu:
+  # =========================
+  # Regex patterns (for robust entity extraction)
+  # =========================
+  - regex: filter_from
+    examples: |
+      - [0-9]{4}-[0-9]{2}-[0-9]{2}
+  - regex: filter_to
+    examples: |
+      - [0-9]{4}-[0-9]{2}-[0-9]{2}
+  - regex: filter_limit
+    examples: |
+      - [0-9]{1,4}
+
+  # =========================
+  # Small talk / control
+  # =========================
   - intent: greet
     examples: |
       - 안녕
@@ -8,6 +24,7 @@ nlu:
       - ㅎㅇ
       - 하이
       - 좋은 아침입니다
+      - 반가워
 
   - intent: goodbye
     examples: |
@@ -16,13 +33,19 @@ nlu:
       - 다음에 봐요
       - 바이
       - 좋은 하루 되세요
+      - 수고하세요
 
   - intent: restart
     examples: |
       - /restart
       - 재시작
       - 다시 시작
+      - 챗봇 초기화해줘
+      - 대화 새로 시작
 
+  # =========================
+  # Main Q&A
+  # =========================
   - intent: ask_anything
     examples: |
       - 회사 주소 알려줘
@@ -47,7 +70,6 @@ nlu:
       - 게시판 확인
       - 보안규
       - 원격지원
-      - 게시판
       - 헬프데스크
       - 자료실
       - 자금팀
@@ -59,7 +81,12 @@ nlu:
       - 복리후생
       - 후생
       - 복리
+      - 지금 몇시야?
+      - 오늘 날짜가 뭐야?
 
+  # =========================
+  # Mode switching
+  # =========================
   - intent: set_mode
     examples: |
       - [내부](mode) 모드로 바꿔줘
@@ -88,16 +115,86 @@ nlu:
     examples: |
       - 내부
       - 내부모드
+      - 내부 모드
       - 내부 지식
       - 내부지식
       - 내부지식 모드
+      - 내부 기반
 
   - synonym: gemini
     examples: |
       - 외부
       - 외부모드
+      - 외부 모드
       - 외부 지식
       - 외부지식
       - 외부지식 모드
       - Gemini
       - gemini
+      - 제미나이
+
+  # =========================
+  # File upload -> summarize
+  # =========================
+  - intent: file_uploaded
+    examples: |
+      - 파일 업로드 했어 경로는 [C:\docs\a.pdf](uploaded_file_path) [application/pdf](uploaded_file_mime)
+      - /file_uploaded{"uploaded_file_path":"/home/user/a.xlsx","uploaded_file_mime":"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"}
+      - 방금 [D:\work\report.csv](uploaded_file_path) 올렸어 형식은 [text/csv](uploaded_file_mime)
+      - 이 파일 정리해줘 경로 [./data/sample.pdf](uploaded_file_path) 타입은 [application/pdf](uploaded_file_mime)
+
+  # =========================
+  # History save/show/end
+  # =========================
+  - intent: save_history
+    examples: |
+      - 대화 저장해
+      - 히스토리 저장해
+      - 지금까지 대화 저장
+      - 로그 남겨
+      - 로그 저장해
+      - 지금 로그로 기록해줘
+
+  - intent: show_history
+    examples: |
+      - 최근 대화 보여줘
+      - 방금 대화 뭐였지
+      - 로그 확인
+      - 대화 내용 확인
+      - 대화 히스토리 확인
+      - 마지막 대화 10개 보여줘
+
+  - intent: end_conversation
+    examples: |
+      - 종료
+      - 대화 끝
+      - 그만
+      - 끝내자
+      - 채팅 종료
+      - 오늘은 여기까지
+
+  # =========================
+  # History search & stats (with entities)
+  # =========================
+  - intent: history_search
+    examples: |
+      - 대화 검색
+      - 로그 찾아줘
+      - sender [alice](filter_sender_id) 의 최근 기록
+      - sender [bob](filter_sender_id) 의 [2025-08-01](filter_from) ~ [2025-08-14](filter_to) 로그
+      - [2025-08-01](filter_from) 부터 [2025-08-12](filter_to) 까지 보여줘
+      - 최근 [200](filter_limit)개만
+      - limit [50](filter_limit)으로 검색
+      - /history_search{"filter_sender_id":"test","filter_from":"2025-08-01","filter_to":"2025-08-14","filter_limit":"100"}
+      - 사용자 [user123](filter_sender_id) 로그 보여줘
+      - [2025-07-01](filter_from)부터 [2025-07-31](filter_to)까지의 대화 검색
+
+  - intent: history_stats
+    examples: |
+      - 대화 집계
+      - 통계 보여줘
+      - sender [alice](filter_sender_id) 통계
+      - [2025-08-01](filter_from)~[2025-08-12](filter_to) 요약
+      - 최근 [30](filter_limit)개만 집계
+      - /history_stats{"filter_sender_id":"test","filter_from":"2025-08-01","filter_to":"2025-08-14"}
+      - [2025-07-01](filter_from) 부터 [2025-07-31](filter_to) 까지 통계

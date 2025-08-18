@@ -1,0 +1,36 @@
+[
+  {
+    "tag_name": "entity",
+    "ids_to_tags": {
+      "1": "B-filter_limit",
+      "2": "I-filter_limit",
+      "3": "L-filter_limit",
+      "4": "U-filter_limit",
+      "5": "B-filter_sender_id",
+      "6": "I-filter_sender_id",
+      "7": "L-filter_sender_id",
+      "8": "U-filter_sender_id",
+      "9": "B-mode",
+      "10": "I-mode",
+      "11": "L-mode",
+      "12": "U-mode",
+      "0": "O"
+    },
+    "tags_to_ids": {
+      "B-filter_limit": 1,
+      "I-filter_limit": 2,
+      "L-filter_limit": 3,
+      "U-filter_limit": 4,
+      "B-filter_sender_id": 5,
+      "I-filter_sender_id": 6,
+      "L-filter_sender_id": 7,
+      "U-filter_sender_id": 8,
+      "B-mode": 9,
+      "I-mode": 10,
+      "L-mode": 11,
+      "U-mode": 12,
+      "O": 0
+    },
+    "num_tags": 13
+  }
+]

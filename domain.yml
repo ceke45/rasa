@@ -7,11 +7,20 @@ intents:
   - set_mode
   - restart
   - file_uploaded
+  - save_history
+  - show_history
+  - end_conversation
+  - history_search
+  - history_stats
 
 entities:
   - mode
   - uploaded_file_path
   - uploaded_file_mime
+  - filter_sender_id
+  - filter_from
+  - filter_to
+  - filter_limit
 
 slots:
   mode:
@@ -35,20 +44,58 @@ slots:
       - type: from_entity
         entity: uploaded_file_mime
 
+  # ⬇ 검색/집계 필터 슬롯
+  filter_sender_id:
+    type: text
+    influence_conversation: false
+    mappings:
+      - type: from_entity
+        entity: filter_sender_id
+
+  filter_from:
+    type: text
+    influence_conversation: false
+    mappings:
+      - type: from_entity
+        entity: filter_from
+
+  filter_to:
+    type: text
+    influence_conversation: false
+    mappings:
+      - type: from_entity
+        entity: filter_to
+
+  filter_limit:
+    type: text
+    influence_conversation: false
+    mappings:
+      - type: from_entity
+        entity: filter_limit
+
 responses:
   utter_greet:
     - text: "안녕하세요! 무엇을 도와드릴까요?"
   utter_goodbye:
     - text: "안녕히 가세요! 언제든 다시 찾아주세요."
-  utter_mode_set_internal:
-    - text: "🧠 내부 지식 기반 모드로 전환했어요."
-  utter_mode_set_gemini:
-    - text: "🤖 외부 Gemini AI 모드로 전환했어요."
+  #utter_mode_set_internal:
+  #  - text: "🧠 내부 지식 기반 모드로 전환했어요."
+  #utter_mode_set_gemini:
+  #  - text: "🤖 외부 Gemini AI 모드로 전환했어요."
+  utter_saved_history:
+    - text: "대화 히스토리를 저장했습니다."
+  utter_no_recent_history:
+    - text: "표시할 최근 대화가 없습니다."
 
 actions:
   - action_set_mode
   - action_smart_answer
   - action_summarize_file
+  - action_save_history
+  - action_show_recent_history
+  # ⬇ 검색/집계 액션 추가
+  - action_history_search
+  - action_history_stats
 
 session_config:
   session_expiration_time: 60

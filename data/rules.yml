@@ -2,32 +2,75 @@ version: "3.1"
 
 rules:
 
-# 인사
-- rule: Greet the user
-  steps:
-    - intent: greet
-    - action: utter_greet
+  # 👋 인사
+  - rule: Greet the user
+    steps:
+      - intent: greet
+      - action: utter_greet
 
-# 작별
-- rule: Say goodbye anytime the user says goodbye
-  steps:
-    - intent: goodbye
-    - action: utter_goodbye
+  # 👋 작별
+  - rule: Say goodbye anytime the user says goodbye
+    steps:
+      - intent: goodbye
+      - action: utter_goodbye
 
+  # 🔀 모드 전환 (필수)
+  - rule: Set mode
+    steps:
+      - intent: set_mode
+      - action: action_set_mode
 
-# 재시작
-- rule: Restart the conversation
-  steps:
-    - intent: restart
-    - action: action_restart
+  # 🤖 모드에 따라 질문 자동 분기
+  - rule: Answer anything by mode
+    steps:
+      - intent: ask_anything
+      - action: action_smart_answer
 
-# 내부/외부 모드에 따라 질문 자동 분기
-- rule: Answer anything by mode
-  steps:
-    - intent: ask_anything
-    - action: action_smart_answer
+  # 📎 파일 업로드 시 요약
+  - rule: Summarize when file uploaded
+    steps:
+      - intent: file_uploaded
+      - action: action_summarize_file
 
-- rule: summarize when file uploaded
-  steps:
-    - intent: file_uploaded
-    - action: action_summarize_file
+  # 💾 대화 히스토리 수동 저장
+  - rule: Save history on request
+    steps:
+      - intent: save_history
+      - action: action_save_history
+
+  # 🔎 최근 대화 히스토리 조회
+  - rule: Show recent history
+    steps:
+      - intent: show_history
+      - action: action_show_recent_history
+
+  # 🛑 사용자가 '종료' 의사 표현 시 저장 후 초기화
+  - rule: Save history when conversation ends
+    steps:
+      - intent: end_conversation
+      - action: action_save_history
+      - action: action_restart
+
+  # 🔍 히스토리 검색
+  - rule: History search
+    steps:
+      - intent: history_search
+      - action: action_history_search
+
+  # 📊 히스토리 집계
+  - rule: History stats
+    steps:
+      - intent: history_stats
+      - action: action_history_stats
+
+  # 🛟 NLU Fallback (임계치 이하일 때) - utter_default가 없다면 utter_greet로 대체
+  - rule: Fallback
+    steps:
+      - intent: nlu_fallback
+      - action: utter_greet
+
+  # 🔁 수동 재시작 (선택)
+  - rule: Manual restart
+    steps:
+      - intent: restart
+      - action: action_restart

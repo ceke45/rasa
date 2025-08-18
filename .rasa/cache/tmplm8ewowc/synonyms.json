@@ -1,0 +1,16 @@
+{
+  "내부": "internal",
+  "internal": "internal",
+  "내부모드": "internal",
+  "내부 지식": "internal",
+  "내부지식": "internal",
+  "내부지식 모드": "internal",
+  "외부": "gemini",
+  "gemini": "gemini",
+  "외부모드": "gemini",
+  "외부 지식": "gemini",
+  "외부지식": "gemini",
+  "외부지식 모드": "gemini",
+  "alice": "alice",
+  "200": "200"
+}

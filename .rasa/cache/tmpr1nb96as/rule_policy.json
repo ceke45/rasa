@@ -1,0 +1,38 @@
+{
+  "lookup": {
+    "rules": {
+      "[{\"prev_action\": {\"action_name\": \"action_listen\"}, \"user\": {\"intent\": \"file_uploaded\"}}]": "action_summarize_file",
+      "[{\"prev_action\": {\"action_name\": \"action_listen\"}, \"user\": {\"intent\": \"file_uploaded\"}}, {\"prev_action\": {\"action_name\": \"action_summarize_file\"}, \"user\": {\"intent\": \"file_uploaded\"}}]": "action_listen",
+      "[{\"prev_action\": {\"action_name\": \"action_listen\"}, \"user\": {\"intent\": \"ask_anything\"}}]": "action_smart_answer",
+      "[{\"prev_action\": {\"action_name\": \"action_listen\"}, \"user\": {\"intent\": \"ask_anything\"}}, {\"prev_action\": {\"action_name\": \"action_smart_answer\"}, \"user\": {\"intent\": \"ask_anything\"}}]": "action_listen",
+      "[{\"prev_action\": {\"action_name\": \"action_listen\"}, \"user\": {\"intent\": \"save_history\"}}]": "action_save_history",
+      "[{\"prev_action\": {\"action_name\": \"action_listen\"}, \"user\": {\"intent\": \"save_history\"}}, {\"prev_action\": {\"action_name\": \"action_save_history\"}, \"user\": {\"intent\": \"save_history\"}}]": "action_listen",
+      "[{\"prev_action\": {\"action_name\": \"action_listen\"}, \"user\": {\"intent\": \"greet\"}}]": "utter_greet",
+      "[{\"prev_action\": {\"action_name\": \"action_listen\"}, \"user\": {\"intent\": \"greet\"}}, {\"prev_action\": {\"action_name\": \"utter_greet\"}, \"user\": {\"intent\": \"greet\"}}]": "action_listen",
+      "[{\"prev_action\": {\"action_name\": \"action_listen\"}, \"user\": {\"intent\": \"goodbye\"}}]": "utter_goodbye",
+      "[{\"prev_action\": {\"action_name\": \"action_listen\"}, \"user\": {\"intent\": \"goodbye\"}}, {\"prev_action\": {\"action_name\": \"utter_goodbye\"}, \"user\": {\"intent\": \"goodbye\"}}]": "action_listen",
+      "[{\"prev_action\": {\"action_name\": \"action_listen\"}, \"user\": {\"intent\": \"show_history\"}}]": "action_show_recent_history",
+      "[{\"prev_action\": {\"action_name\": \"action_listen\"}, \"user\": {\"intent\": \"show_history\"}}, {\"prev_action\": {\"action_name\": \"action_show_recent_history\"}, \"user\": {\"intent\": \"show_history\"}}]": "action_listen",
+      "[{\"prev_action\": {\"action_name\": \"action_listen\"}, \"user\": {\"intent\": \"end_conversation\"}}]": "action_save_history",
+      "[{\"prev_action\": {\"action_name\": \"action_listen\"}, \"user\": {\"intent\": \"end_conversation\"}}, {\"prev_action\": {\"action_name\": \"action_save_history\"}, \"user\": {\"intent\": \"end_conversation\"}}]": "action_restart",
+      "[{\"prev_action\": {\"action_name\": \"action_listen\"}, \"user\": {\"intent\": \"end_conversation\"}}, {\"prev_action\": {\"action_name\": \"action_save_history\"}, \"user\": {\"intent\": \"end_conversation\"}}, {\"prev_action\": {\"action_name\": \"action_restart\"}, \"user\": {\"intent\": \"end_conversation\"}}]": "action_listen"
+    },
+    "rule_only_slots": [],
+    "rule_only_loops": [],
+    "rules_for_loop_unhappy_path": {},
+    "rules_not_in_stories": [
+      "[{\"prev_action\": {\"action_name\": \"action_listen\"}, \"user\": {\"intent\": \"end_conversation\"}}, {\"prev_action\": {\"action_name\": \"action_save_history\"}, \"user\": {\"intent\": \"end_conversation\"}}]",
+      "[{\"prev_action\": {\"action_name\": \"action_listen\"}, \"user\": {\"intent\": \"save_history\"}}]",
+      "[{\"prev_action\": {\"action_name\": \"action_listen\"}, \"user\": {\"intent\": \"end_conversation\"}}]",
+      "predicting default action with intent restart",
+      "predicting default action with intent back",
+      "[{\"prev_action\": {\"action_name\": \"action_listen\"}, \"user\": {\"intent\": \"file_uploaded\"}}, {\"prev_action\": {\"action_name\": \"action_summarize_file\"}, \"user\": {\"intent\": \"file_uploaded\"}}]",
+      "[{\"prev_action\": {\"action_name\": \"action_listen\"}, \"user\": {\"intent\": \"file_uploaded\"}}]",
+      "[{\"prev_action\": {\"action_name\": \"action_listen\"}, \"user\": {\"intent\": \"show_history\"}}]",
+      "[{\"prev_action\": {\"action_name\": \"action_listen\"}, \"user\": {\"intent\": \"end_conversation\"}}, {\"prev_action\": {\"action_name\": \"action_save_history\"}, \"user\": {\"intent\": \"end_conversation\"}}, {\"prev_action\": {\"action_name\": \"action_restart\"}, \"user\": {\"intent\": \"end_conversation\"}}]",
+      "[{\"prev_action\": {\"action_name\": \"action_listen\"}, \"user\": {\"intent\": \"save_history\"}}, {\"prev_action\": {\"action_name\": \"action_save_history\"}, \"user\": {\"intent\": \"save_history\"}}]",
+      "predicting default action with intent session_start",
+      "[{\"prev_action\": {\"action_name\": \"action_listen\"}, \"user\": {\"intent\": \"show_history\"}}, {\"prev_action\": {\"action_name\": \"action_show_recent_history\"}, \"user\": {\"intent\": \"show_history\"}}]"
+    ]
+  }
+}

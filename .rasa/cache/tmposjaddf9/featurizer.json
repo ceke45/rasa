@@ -1,0 +1,61 @@
+{
+  "type": "MaxHistoryTrackerFeaturizer",
+  "state_featurizer": {
+    "action_texts": [],
+    "entity_tag_specs": [],
+    "feature_states": {
+      "intent": {
+        "ask_anything": 0,
+        "back": 1,
+        "end_conversation": 2,
+        "file_uploaded": 3,
+        "goodbye": 4,
+        "greet": 5,
+        "nlu_fallback": 6,
+        "out_of_scope": 7,
+        "restart": 8,
+        "save_history": 9,
+        "session_start": 10,
+        "set_mode": 11,
+        "show_history": 12
+      },
+      "action_name": {
+        "action_listen": 0,
+        "action_restart": 1,
+        "action_session_start": 2,
+        "action_default_fallback": 3,
+        "action_deactivate_loop": 4,
+        "action_revert_fallback_events": 5,
+        "action_default_ask_affirmation": 6,
+        "action_default_ask_rephrase": 7,
+        "action_two_stage_fallback": 8,
+        "action_unlikely_intent": 9,
+        "action_back": 10,
+        "...": 11,
+        "action_extract_slots": 12,
+        "action_set_mode": 13,
+        "action_smart_answer": 14,
+        "action_summarize_file": 15,
+        "action_save_history": 16,
+        "action_show_recent_history": 17,
+        "utter_goodbye": 18,
+        "utter_greet": 19,
+        "utter_mode_set_gemini": 20,
+        "utter_mode_set_internal": 21,
+        "utter_no_recent_history": 22,
+        "utter_saved_history": 23
+      },
+      "entities": {
+        "mode": 0,
+        "uploaded_file_mime": 1,
+        "uploaded_file_path": 2
+      },
+      "slots": {
+        "mode_0": 0
+      },
+      "active_loop": {}
+    }
+  },
+  "remove_duplicates": true,
+  "max_history": 10
+}

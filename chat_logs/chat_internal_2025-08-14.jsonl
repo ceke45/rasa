@@ -1,0 +1,58 @@
+{"ts": "2025-08-14T06:22:54.648098Z", "sender_id": "local-user", "role": "system", "text": "[mode_change] -> internal", "mode": "internal", "meta": {"action": "action_set_mode"}}
+{"ts": "2025-08-14T06:22:54.651072Z", "sender_id": "local-user", "role": "bot", "text": "🧠 내부 지식 기반 모드로 전환했어요.", "mode": "internal", "meta": {"action": "action_set_mode"}}
+{"ts": "2025-08-14T06:23:01.969560Z", "sender_id": "local-user", "role": "system", "text": "[mode_change] -> internal", "mode": "internal", "meta": {"action": "action_set_mode"}}
+{"ts": "2025-08-14T06:23:01.972563Z", "sender_id": "local-user", "role": "bot", "text": "🧠 내부 지식 기반 모드로 전환했어요.", "mode": "internal", "meta": {"action": "action_set_mode"}}
+{"ts": "2025-08-14T06:23:06.177622Z", "sender_id": "local-user", "role": "user", "text": "퇴근 시간", "mode": "internal", "meta": {"action": "action_smart_answer"}}
+{"ts": "2025-08-14T06:23:06.185829Z", "sender_id": "local-user", "role": "bot", "text": "퇴근시간은 오후 6시입니다. 퇴근 시 지문 등록을 꼭 하시길 바랍니다.", "mode": "internal", "meta": {"topic": "퇴근시간"}}
+{"ts": "2025-08-14T06:23:15.645889Z", "sender_id": "local-user", "role": "system", "text": "[mode_change] -> internal", "mode": "internal", "meta": {"action": "action_set_mode"}}
+{"ts": "2025-08-14T06:23:15.649889Z", "sender_id": "local-user", "role": "bot", "text": "🧠 내부 지식 기반 모드로 전환했어요.", "mode": "internal", "meta": {"action": "action_set_mode"}}
+{"ts": "2025-08-14T06:28:35.150819Z", "sender_id": "local-user", "role": "system", "text": "[mode_change] -> internal", "mode": "internal", "meta": {"action": "action_set_mode"}}
+{"ts": "2025-08-14T06:28:35.152821Z", "sender_id": "local-user", "role": "bot", "text": "🧠 내부 지식 기반 모드로 전환했어요.", "mode": "internal", "meta": {"action": "action_set_mode"}}
+{"ts": "2025-08-14T06:28:39.341165Z", "sender_id": "local-user", "role": "user", "text": "현재 시간", "mode": "internal", "meta": {"action": "action_smart_answer"}}
+{"ts": "2025-08-14T06:28:40.178369Z", "sender_id": "local-user", "role": "bot", "text": "현재 한국 시간은 2025년 08월 14일 Thursday PM 03시 28분입니다. 😊", "mode": "internal", "meta": {}}
+{"ts": "2025-08-14T06:51:21.776047Z", "sender_id": "local-user", "role": "system", "text": "[mode_change] -> internal", "mode": "internal", "meta": {"action": "action_set_mode"}}
+{"ts": "2025-08-14T06:51:21.779045Z", "sender_id": "local-user", "role": "bot", "text": "🧠 내부 지식 기반 모드로 전환했어요.", "mode": "internal", "meta": {"action": "action_set_mode"}}
+{"ts": "2025-08-14T07:01:09.266654Z", "sender_id": "local-user", "role": "system", "text": "[mode_change] -> internal", "mode": "internal", "meta": {"action": "action_set_mode"}}
+{"ts": "2025-08-14T07:01:09.270677Z", "sender_id": "local-user", "role": "bot", "text": "🧠 내부 지식 기반 모드로 전환했어요.", "mode": "internal", "meta": {"action": "action_set_mode"}}
+{"ts": "2025-08-14T07:01:34.784618Z", "sender_id": "local-user", "role": "system", "text": "[mode_change] -> internal", "mode": "internal", "meta": {"action": "action_set_mode"}}
+{"ts": "2025-08-14T07:01:34.785939Z", "sender_id": "local-user", "role": "bot", "text": "🧠 내부 지식 기반 모드로 전환했어요.", "mode": "internal", "meta": {"action": "action_set_mode"}}
+{"ts": "2025-08-14T07:01:38.914879Z", "sender_id": "local-user", "role": "user", "text": "경영기획팀", "mode": "internal", "meta": {"action": "action_smart_answer"}}
+{"ts": "2025-08-14T07:01:38.917856Z", "sender_id": "local-user", "role": "bot", "text": "경영기획팀은 결제관련 내부회계 관련 업무를 담당하며, 10층에 위치해 있습니다. 팀장은 이경석 차장입니다.", "mode": "internal", "meta": {"topic": "경영기획팀"}}
+{"ts": "2025-08-14T07:01:47.984027Z", "sender_id": "local-user", "role": "system", "text": "[mode_change] -> internal", "mode": "internal", "meta": {"action": "action_set_mode"}}
+{"ts": "2025-08-14T07:01:47.986101Z", "sender_id": "local-user", "role": "bot", "text": "🧠 내부 지식 기반 모드로 전환했어요.", "mode": "internal", "meta": {"action": "action_set_mode"}}
+{"ts": "2025-08-14T07:08:05.195919Z", "sender_id": "local-user", "role": "system", "text": "[mode_change] -> internal", "mode": "internal", "meta": {"action": "action_set_mode"}}
+{"ts": "2025-08-14T07:08:05.197915Z", "sender_id": "local-user", "role": "bot", "text": "🧠 내부 지식 기반 모드로 전환했어요.", "mode": "internal", "meta": {"action": "action_set_mode"}}
+{"ts": "2025-08-14T07:13:36.037439Z", "sender_id": "local-user", "role": "system", "text": "[mode_change] -> internal", "mode": "internal", "meta": {"action": "action_set_mode"}}
+{"ts": "2025-08-14T07:13:36.041438Z", "sender_id": "local-user", "role": "bot", "text": "🧠 내부 지식 기반 모드로 전환했어요.", "mode": "internal", "meta": {"action": "action_set_mode"}}
+{"ts": "2025-08-14T07:13:52.923234Z", "sender_id": "local-user", "role": "system", "text": "[mode_change] -> internal", "mode": "internal", "meta": {"action": "action_set_mode"}}
+{"ts": "2025-08-14T07:13:52.927641Z", "sender_id": "local-user", "role": "bot", "text": "🧠 내부 지식 기반 모드로 전환했어요.", "mode": "internal", "meta": {"action": "action_set_mode"}}
+{"ts": "2025-08-14T07:13:57.085488Z", "sender_id": "local-user", "role": "user", "text": "회사 주소", "mode": "internal", "meta": {"action": "action_smart_answer"}}
+{"ts": "2025-08-14T07:13:57.089487Z", "sender_id": "local-user", "role": "bot", "text": "저희 대표 회사주소는 서울 서초구 강남대로 27, at센터 10층,14층에 있습니다.", "mode": "internal", "meta": {"topic": "주소"}}
+{"ts": "2025-08-14T07:19:39.718427Z", "sender_id": "local-user", "role": "system", "text": "[mode_change] -> internal", "mode": "internal", "meta": {"action": "action_set_mode"}}
+{"ts": "2025-08-14T07:19:39.720426Z", "sender_id": "local-user", "role": "bot", "text": "🧠 내부 지식 기반 모드로 전환했어요.", "mode": "internal", "meta": {"action": "action_set_mode"}}
+{"ts": "2025-08-14T07:19:43.887817Z", "sender_id": "local-user", "role": "user", "text": "회사주소", "mode": "internal", "meta": {"action": "action_smart_answer"}}
+{"ts": "2025-08-14T07:19:43.891836Z", "sender_id": "local-user", "role": "bot", "text": "저희 대표 회사주소는 서울 서초구 강남대로 27, at센터 10층,14층에 있습니다.", "mode": "internal", "meta": {"topic": "주소"}}
+{"ts": "2025-08-14T07:29:16.418805Z", "sender_id": "local-user", "role": "system", "text": "[mode_change] -> internal", "mode": "internal", "meta": {"action": "action_set_mode"}}
+{"ts": "2025-08-14T07:29:16.420805Z", "sender_id": "local-user", "role": "bot", "text": "🧠 내부 지식 기반 모드로 전환했어요.", "mode": "internal", "meta": {"action": "action_set_mode"}}
+{"ts": "2025-08-14T07:29:20.608287Z", "sender_id": "local-user", "role": "user", "text": "자금팀", "mode": "internal", "meta": {"action": "action_smart_answer"}}
+{"ts": "2025-08-14T07:29:20.612284Z", "sender_id": "local-user", "role": "bot", "text": "자금팀은 결제관련 업무 및 법인카드 관리를 담당하며, 10층에 위치해 있습니다. 팀장은 이은옥 차장입니다.", "mode": "internal", "meta": {"topic": "자금팀"}}
+{"ts": "2025-08-14T07:29:32.917625Z", "sender_id": "local-user", "role": "system", "text": "[mode_change] -> internal", "mode": "internal", "meta": {"action": "action_set_mode"}}
+{"ts": "2025-08-14T07:29:32.920609Z", "sender_id": "local-user", "role": "bot", "text": "🧠 내부 지식 기반 모드로 전환했어요.", "mode": "internal", "meta": {"action": "action_set_mode"}}
+{"ts": "2025-08-14T07:29:37.039348Z", "sender_id": "local-user", "role": "user", "text": "출근 시간", "mode": "internal", "meta": {"action": "action_smart_answer"}}
+{"ts": "2025-08-14T07:29:37.041347Z", "sender_id": "local-user", "role": "bot", "text": "출근시간은 오전 9시이며, 10분 전까지 도착하여 업무 준비를 권장드립니다.", "mode": "internal", "meta": {"topic": "출근시간"}}
+{"ts": "2025-08-14T07:35:44.498989Z", "sender_id": "local-user", "role": "system", "text": "[mode_change] -> internal", "mode": "internal", "meta": {"action": "action_set_mode"}}
+{"ts": "2025-08-14T07:35:44.501988Z", "sender_id": "local-user", "role": "bot", "text": "🧠 내부 지식 기반 모드로 전환했어요.", "mode": "internal", "meta": {"action": "action_set_mode"}}
+{"ts": "2025-08-14T07:35:49.031955Z", "sender_id": "local-user", "role": "user", "text": "회사 주소", "mode": "internal", "meta": {"action": "action_smart_answer"}}
+{"ts": "2025-08-14T07:35:49.044910Z", "sender_id": "local-user", "role": "bot", "text": "저희 대표 회사주소는 서울 서초구 강남대로 27, at센터 10층,14층에 있습니다.", "mode": "internal", "meta": {"topic": "주소"}}
+{"ts": "2025-08-14T07:36:07.719426Z", "sender_id": "local-user", "role": "system", "text": "[mode_change] -> internal", "mode": "internal", "meta": {"action": "action_set_mode"}}
+{"ts": "2025-08-14T07:36:07.721426Z", "sender_id": "local-user", "role": "bot", "text": "🧠 내부 지식 기반 모드로 전환했어요.", "mode": "internal", "meta": {"action": "action_set_mode"}}
+{"ts": "2025-08-14T07:36:12.183816Z", "sender_id": "local-user", "role": "user", "text": "회사 비전", "mode": "internal", "meta": {"action": "action_smart_answer"}}
+{"ts": "2025-08-14T07:36:12.188841Z", "sender_id": "local-user", "role": "bot", "text": "저희 회사의 비전은 '세계 1등 바이오·제약 챔피언, 건강장수 130, 엔지켐생명과학 3.0, 아름다운 삶 3.0' 입니다.", "mode": "internal", "meta": {"topic": "비전"}}
+{"ts": "2025-08-14T07:58:35.432288Z", "sender_id": "local-user", "role": "user", "text": "회사 주소", "mode": "internal", "meta": {"action": "action_smart_answer"}}
+{"ts": "2025-08-14T07:58:35.436290Z", "sender_id": "local-user", "role": "bot", "text": "저희 대표 회사주소는 서울 서초구 강남대로 27, at센터 10층,14층에 있습니다.", "mode": "internal", "meta": {"topic": "주소"}}
+{"ts": "2025-08-14T08:08:54.719592Z", "sender_id": "local-user", "role": "user", "text": "회사 주소", "mode": "internal", "meta": {"action": "action_smart_answer"}}
+{"ts": "2025-08-14T08:08:54.723546Z", "sender_id": "local-user", "role": "bot", "text": "저희 대표 회사주소는 서울 서초구 강남대로 27, at센터 10층,14층에 있습니다.", "mode": "internal", "meta": {"topic": "주소"}}
+{"ts_kst": "2025-08-14T17:26:25+09:00", "ts_kst_human": "2025-08-14 (Thu) 17:26:25", "sender_id": "local-user", "role": "user", "text": "회사 주소", "mode": "internal", "meta": {"action": "action_smart_answer"}}
+{"ts_kst": "2025-08-14T17:26:25+09:00", "ts_kst_human": "2025-08-14 (Thu) 17:26:25", "sender_id": "local-user", "role": "bot", "text": "저희 대표 회사주소는 서울 서초구 강남대로 27, at센터 10층,14층에 있습니다.", "mode": "internal", "meta": {"topic": "주소"}}
+{"ts_kst": "2025-08-14T17:34:57+09:00", "ts_kst_human": "2025-08-14 (Thu) 17:34:57", "sender_id": "local-user", "role": "user", "text": "IT지원", "mode": "internal", "meta": {"action": "action_smart_answer"}}
+{"ts_kst": "2025-08-14T17:34:57+09:00", "ts_kst_human": "2025-08-14 (Thu) 17:34:57", "sender_id": "local-user", "role": "bot", "text": "IT지원팀 연락처는 02-6213-7184입니다. 시스템 문제 시 언제든 연락주세요.", "mode": "internal", "meta": {"topic": "IT지원"}}

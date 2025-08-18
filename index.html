@@ -106,6 +106,16 @@
       border: 1px solid #cce3f2;
     }
 
+    /* 타임스탬프 스타일 */
+    .msg-time {
+      font-size: 11px;
+      color: #777;
+      margin: 4px 6px 12px;
+      clear: both;
+    }
+    .msg-time.user { text-align: right; }
+    .msg-time.bot  { text-align: left; }
+
     .chat-input {
       display: flex;
       align-items: center;
@@ -177,9 +187,9 @@
 
       <div class="chat-messages" id="chat-box">
         <div class="message bot">무엇을 도와드릴까요? 궁금한 점을 입력해 주세요.</div>
+        <div class="msg-time bot" id="init-time"></div>
       </div>
 
-      <!-- ↓↓↓ 파일 첨부 & 업로드 요약을 입력창 왼쪽으로 이동 ↓↓↓ -->
       <div class="chat-input">
         <div class="file-controls">
           <input type="file" id="fileInput" style="display:none" />
@@ -191,7 +201,6 @@
         <input type="text" id="user-input" placeholder="메시지를 입력하세요..." />
         <button class="btn" id="sendBtn" type="button">전송</button>
       </div>
-      <!-- ↑↑↑ -->
     </div>
   </div>
 
@@ -205,11 +214,40 @@
     const uploadBtn = document.getElementById("uploadBtn");
     const fileName  = document.getElementById("fileName");
 
-    function appendMessage(sender, message) {
-      const msg = document.createElement("div");
-      msg.className = `message ${sender}`;
-      msg.innerHTML = message; // 링크/줄바꿈 허용
-      chatBox.appendChild(msg);
+    // KST 현재 시간을 "YYYY-MM-DD (목) HH:MM:SS"로 생성
+    function nowKSTHuman() {
+      const d = new Date();
+      const parts = new Intl.DateTimeFormat("ko-KR", {
+        timeZone: "Asia/Seoul",
+        year: "numeric", month: "2-digit", day: "2-digit",
+        weekday: "short",
+        hour: "2-digit", minute: "2-digit", second: "2-digit",
+        hour12: false
+      }).formatToParts(d);
+      const get = (t) => parts.find(p => p.type === t)?.value ?? "";
+      return `${get("year")}-${get("month")}-${get("day")} (${get("weekday")}) ${get("hour")}:${get("minute")}:${get("second")}`;
+    }
+
+    // ▶ 모드 전환 메시지인지 판별 (백업용)
+    function isModeChangeMsg(m) {
+      if (!m) return false;
+      if (m.meta && m.meta.action === 'action_set_mode') return true;
+      const text = (m.text || '');
+      return /모드로 전환했어요|mode\s*changed|switched\s+to/i.test(text);
+    }
+
+    // 말풍선 + 시간 렌더 (KST만 사용)
+    function appendMessage(sender, message, kstHuman) {
+      const bubble = document.createElement("div");
+      bubble.className = `message ${sender}`;
+      bubble.innerHTML = message;
+      chatBox.appendChild(bubble);
+
+      const time = document.createElement("div");
+      time.className = `msg-time ${sender}`;
+      time.textContent = kstHuman || nowKSTHuman();
+      chatBox.appendChild(time);
+
       chatBox.scrollTop = chatBox.scrollHeight;
     }
 
@@ -226,18 +264,23 @@
       const message = userInput.value.trim();
       if (!message) return;
 
+      // 사용자 메시지 먼저 표시 (현재 KST)
       appendMessage("user", message);
       userInput.value = "";
 
       const mode = document.querySelector('input[name="mode"]:checked').value;
 
-      // 1) 모드 설정
+      // 1) 모드 설정: 호출만 (응답은 서버에서 []로 폐기)
       await postJSON("/send", { text: `/set_mode{"mode":"${mode}"}` });
 
-      // 2) 사용자 메시지
+      // 2) 사용자 메시지 전달
       const data = await postJSON("/send", { text: message });
+
+      // 서버가 내려주는 ts_kst_human을 사용 (없으면 현재 KST)
       (data || []).forEach(m => {
-        if (m.text) appendMessage("bot", m.text);
+        if (m?.text && !isModeChangeMsg(m)) {
+          appendMessage("bot", m.text, m.ts_kst_human);
+        }
       });
     }
 
@@ -283,15 +326,21 @@
           return;
         }
 
-        if (j.replies && j.replies.length) {
-          j.replies.forEach(t => appendMessage("bot", t));
+        // replies_rich가 있으면 ts_kst_human 사용
+        if (j.replies_rich && j.replies_rich.length) {
+          j.replies_rich
+            .filter(x => !isModeChangeMsg(x))
+            .forEach(x => appendMessage("bot", x.text, x.ts_kst_human));
+        } else if (j.replies && j.replies.length) {
+          j.replies
+            .filter(t => !/모드로 전환했어요|mode\s*changed|switched\s+to/i.test(t))
+            .forEach(t => appendMessage("bot", t));
         } else {
           appendMessage("bot", "요약 결과가 비어 있습니다.");
         }
       } catch (e) {
         appendMessage("bot", "업로드/요약 중 오류: " + e);
       } finally {
-        // 파일 입력 초기화(같은 파일 다시 선택해도 change 발생하도록)
         fileInput.value = "";
         fileName.textContent = "선택된 파일 없음";
       }
@@ -299,9 +348,17 @@
 
     uploadBtn.addEventListener("click", uploadAndSummarize);
 
-    // 텍스트 전송
+    // 전송 핫키
     sendBtn.addEventListener("click", sendMessage);
     userInput.addEventListener("keydown", (e) => { if (e.key === "Enter") sendMessage(); });
+
+    // 초기 안내 메시지 시간 (KST 현재)
+    document.addEventListener("DOMContentLoaded", () => {
+      const initTime = document.getElementById("init-time");
+      if (initTime) {
+        initTime.textContent = nowKSTHuman();
+      }
+    });
   </script>
 </body>
 </html>

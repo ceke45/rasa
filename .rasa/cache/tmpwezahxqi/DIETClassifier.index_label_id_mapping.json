@@ -1,0 +1,13 @@
+{
+  "0": "ask_anything",
+  "1": "end_conversation",
+  "2": "file_uploaded",
+  "3": "goodbye",
+  "4": "greet",
+  "5": "history_search",
+  "6": "history_stats",
+  "7": "restart",
+  "8": "save_history",
+  "9": "set_mode",
+  "10": "show_history"
+}
